@@ -59,6 +59,17 @@ function broadcast(msg) {
     if (client.readyState === WebSocket.OPEN) client.send(msg);
   });
 }
+// SEND SYNC SNAPSHOT WHENEVER A NEW CLIENT CONNECTS
+wss.on("connection", (ws) => {
+    ws.send(JSON.stringify({
+        type: "occupancy",
+        payload: {
+            occupancy,
+            action: "sync",
+            ts: new Date().toISOString()
+        }
+    }));
+});
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
